@@ -86,6 +86,7 @@ def review_list_view(request):
         print(request.data)
         text = request.data.get('text')
         movie = request.data.get('movie')
+        stars = request.data.get('stars')
         review = Review.objects.create(text=text, movie=movie, stars=stars)
         return Response(data=ReviewSerializer(review).data,
                         status=status.HTTP_201_CREATED)
@@ -107,5 +108,14 @@ def review_detail_view(request, id):
     elif request.method == 'PUT':
         review.text = request.data.get('text')
         review.movie = request.data.get('movie')
+        review.stars = request.data.get('stars')
         review.save()
         return Response(data=MovieSerializer(review).data)
+
+
+
+@api_view(['GET'])
+def movies_reviews_view(request):
+    movie_reviews = Movie.objects.all()
+    data = MovieSerializer(movie_reviews, many=True).data
+    return Response(data=data)
